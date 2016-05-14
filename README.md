@@ -4,6 +4,8 @@ Image Analysis with [MicrosoftCognitive Services](https://www.microsoft.com/cogn
 This Windows 10 app uses 3 APIs included in the Microsoft Cognitive Services: Computer Vision, Bing Speech and Bing Image Search. 
 Based on these APIs the user is able to search for pictures and analyse them, by clicking on one of the 4 suggestions. The chosen image is then described by Computer Vision API and the response is given via text and speech. 
 
+** make sure to include your Cognitive services credentials at the crucial points. Also for the speech recognition follow instructions from NuGet package. **
+
 ## Author - Daniel Heinze
 
 * Blog: https://devblog.azurewebsites.net/
