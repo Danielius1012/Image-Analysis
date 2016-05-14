@@ -3,9 +3,9 @@ Image Analysis with [MicrosoftCognitive Services](https://www.microsoft.com/cogn
 
 ## Author - Daniel Heinze
 
-Blog: https://devblog.azurewebsites.net/
-Facebook: https://www.facebook.com/danielsdevblog/
-Twitter: https://twitter.com/starlord_daniel
+* Blog: https://devblog.azurewebsites.net/
+* Facebook: https://www.facebook.com/danielsdevblog/
+* Twitter: https://twitter.com/starlord_daniel
 
 ## License
 
