@@ -1,5 +1,5 @@
 # Image-Analysis
-Image Analysis with ![MicrosoftCognitive Services](https://www.microsoft.com/cognitive-services/). 
+Image Analysis with [MicrosoftCognitive Services](https://www.microsoft.com/cognitive-services/). 
 
 ## Author - Daniel Heinze
 
