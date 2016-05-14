@@ -47,7 +47,12 @@ namespace DescribeImage
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private string SubscriptionKey = "4fd45b186142417ab8d3cf0c0ae93dd2";
+        // Get the keys from the cognitive services portal https://www.microsoft.com/cognitive-services/en-US/subscriptions
+        private string WebSearchKey = "YOUR KEY HERE";
+        private string VisionSubscriptionKey = "YOUR KEY HERE";
+        private string SpeechClientId = "YOUR ID HERE";
+        private string SpeechClientSecret = "YOUR SECRET HERE";
+
         VisualFeature[] visualFeatures = new VisualFeature[] { VisualFeature.Adult, VisualFeature.Categories, VisualFeature.Color, VisualFeature.Description, VisualFeature.Faces, VisualFeature.ImageType, VisualFeature.Tags };
 
         public MainPage()
@@ -66,16 +71,14 @@ namespace DescribeImage
 
         private async Task<AnalysisResult> AnalyzeInDomainUrl(string imageUrl, VisualFeature[] domainModel)
         {
-            VisionServiceClient VisionServiceClient = new VisionServiceClient(SubscriptionKey);
+            VisionServiceClient VisionServiceClient = new VisionServiceClient(VisionSubscriptionKey);
             AnalysisResult analysisResult = await VisionServiceClient.AnalyzeImageAsync(imageUrl, domainModel);
             return analysisResult;
         }
 
         private async void CreateAudioOutput(string textToSpeak)
         {
-
-
-            SpeechSynthesizer speech = new SpeechSynthesizer("Image-Analysis", "nsCluSRPgvX92BJJrXBr5TWv60yutk6+B3VfS7vvWOA=");
+            SpeechSynthesizer speech = new SpeechSynthesizer(SpeechClientId, SpeechClientSecret);
             var audio = await speech.GetSpeakStreamAsync(textToSpeak);
 
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromStream(audio, "audio/wav");
@@ -90,7 +93,7 @@ namespace DescribeImage
             var queryString = $"q={input}";
 
             // Request headers
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "533b5b92d2f2408e8d9350884623e88b");
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", WebSearchKey);
 
             // Request parameters
             var uri = "https://bingapis.azure-api.net/api/v5/images/search?" + queryString;
