@@ -48,10 +48,10 @@ namespace DescribeImage
     public sealed partial class MainPage : Page
     {
         // Get the keys from the cognitive services portal https://www.microsoft.com/cognitive-services/en-US/subscriptions
-        private string WebSearchKey = "YOUR KEY HERE";
-        private string VisionSubscriptionKey = "YOUR KEY HERE";
-        private string SpeechClientId = "YOUR ID HERE";
-        private string SpeechClientSecret = "YOUR SECRET HERE";
+        private string WebSearchKey = "98a0a152e454441b8bdfdec5f75438ce";
+        private string VisionSubscriptionKey = "27e1e3fcec1441ca85531c1cd1b85e73";
+        private string SpeechClientId = "Image-Analysis";
+        private string SpeechClientSecret = "nsCluSRPgvX92BJJrXBr5TWv60yutk6+B3VfS7vvWOA=";
 
         VisualFeature[] visualFeatures = new VisualFeature[] { VisualFeature.Adult, VisualFeature.Categories, VisualFeature.Color, VisualFeature.Description, VisualFeature.Faces, VisualFeature.ImageType, VisualFeature.Tags };
 
@@ -60,30 +60,23 @@ namespace DescribeImage
             this.InitializeComponent();
         }
 
-        private async Task GetAnalysisResult(string imageUrl)
-        {
-            AnalysisResult analysisResult;
-            analysisResult = await AnalyzeInDomainUrl(imageUrl, visualFeatures);
+        #region Web Search
 
-            AnalysisResultLabel.Text = analysisResult.Description.Captions[0].Text;
-            CreateAudioOutput(analysisResult.Description.Captions[0].Text);
+        private void WebSearch_Click(object sender, RoutedEventArgs e)
+        {
+            WebImageSearch();
+
+            AnalysisResultLabel.Text = "Image Analysis Result";
         }
 
-        private async Task<AnalysisResult> AnalyzeInDomainUrl(string imageUrl, VisualFeature[] domainModel)
+        private void UrlInput_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            VisionServiceClient VisionServiceClient = new VisionServiceClient(VisionSubscriptionKey);
-            AnalysisResult analysisResult = await VisionServiceClient.AnalyzeImageAsync(imageUrl, domainModel);
-            return analysisResult;
-        }
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                WebImageSearch();
 
-        private async void CreateAudioOutput(string textToSpeak)
-        {
-            SpeechSynthesizer speech = new SpeechSynthesizer(SpeechClientId, SpeechClientSecret);
-            var audio = await speech.GetSpeakStreamAsync(textToSpeak);
-
-            var mediaSource = Windows.Media.Core.MediaSource.CreateFromStream(audio, "audio/wav");
-            AudioPlayer.SetPlaybackSource(mediaSource);
-
+                AnalysisResultLabel.Text = "Image Analysis Result";
+            }
         }
 
         private async void WebImageSearch()
@@ -108,20 +101,15 @@ namespace DescribeImage
             foreach (var image in imageList)
             {
                 BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.UriSource = new Uri(results.value[r.Next(0,results.value.Length)].contentUrl);
+                bitmapImage.UriSource = new Uri(results.value[r.Next(0, results.value.Length)].contentUrl);
 
                 image.Source = bitmapImage;
             }
         }
 
-        #region Interaction_Events
-        
-        private void WebSearch_Click(object sender, RoutedEventArgs e)
-        {
-            WebImageSearch();
+        #endregion
 
-            AnalysisResultLabel.Text = "Image Analysis Result";
-        }
+        #region Image Analysis
 
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -132,17 +120,39 @@ namespace DescribeImage
             await GetAnalysisResult(((BitmapImage)image.Source).UriSource.AbsoluteUri);
         }
 
-        private void UrlInput_KeyDown(object sender, KeyRoutedEventArgs e)
+        private async Task GetAnalysisResult(string imageUrl)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter)
-            {
-                WebImageSearch();
+            AnalysisResult analysisResult;
+            analysisResult = await AnalyzeInDomainUrl(imageUrl, visualFeatures);
 
-                AnalysisResultLabel.Text = "Image Analysis Result";
-            }
+            AnalysisResultLabel.Text = analysisResult.Description.Captions[0].Text;
+            CreateAudioOutput(analysisResult.Description.Captions[0].Text);
         }
 
-        #endregion 
+        private async Task<AnalysisResult> AnalyzeInDomainUrl(string imageUrl, VisualFeature[] domainModel)
+        {
+            VisionServiceClient VisionServiceClient = new VisionServiceClient(VisionSubscriptionKey);
+            AnalysisResult analysisResult = await VisionServiceClient.AnalyzeImageAsync(imageUrl, domainModel);
+            return analysisResult;
+        }
+
+        #endregion
+
+        #region Audio
+
+        private async void CreateAudioOutput(string textToSpeak)
+        {
+            SpeechSynthesizer speech = new SpeechSynthesizer(SpeechClientId, SpeechClientSecret);
+            var audio = await speech.GetSpeakStreamAsync(textToSpeak);
+
+            var mediaSource = Windows.Media.Core.MediaSource.CreateFromStream(audio, "audio/wav");
+            AudioPlayer.SetPlaybackSource(mediaSource);
+
+        }
+
+        #endregion
+
+
 
 
     }
