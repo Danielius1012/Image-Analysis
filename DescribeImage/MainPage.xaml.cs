@@ -48,7 +48,7 @@ namespace DescribeImage
     public sealed partial class MainPage : Page
     {
         // Get the keys from the cognitive services portal https://www.microsoft.com/cognitive-services/en-US/subscriptions
-        private string WebSearchKey = "98a0a152e454441b8bdfdec5f75438ce";
+        private string WebSearchKey = "614ba201ddb74c6499c93c21d6027076";
         private string VisionSubscriptionKey = "27e1e3fcec1441ca85531c1cd1b85e73";
         private string SpeechClientId = "Image-Analysis";
         private string SpeechClientSecret = "nsCluSRPgvX92BJJrXBr5TWv60yutk6+B3VfS7vvWOA=";
@@ -81,30 +81,38 @@ namespace DescribeImage
 
         private async void WebImageSearch()
         {
-            var client = new HttpClient();
-            var input = UrlInput.Text != "" ? UrlInput.Text : "cat";
-            var queryString = $"q={input}";
-
-            // Request headers
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", WebSearchKey);
-
-            // Request parameters
-            var uri = "https://bingapis.azure-api.net/api/v5/images/search?" + queryString;
-
-            var response = await client.GetStringAsync(uri);
-            var results = JsonConvert.DeserializeObject<WebImageSearchResult>(response);
-
-            var imageList = new List<Image> { Image1, Image2, Image3, Image4 };
-
-            Random r = new Random();
-
-            foreach (var image in imageList)
+            try
             {
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.UriSource = new Uri(results.value[r.Next(0, results.value.Length)].contentUrl);
+                var client = new HttpClient();
+                var input = UrlInput.Text != "" ? UrlInput.Text : "cat";
+                var queryString = $"q={input}";
 
-                image.Source = bitmapImage;
+                // Request headers
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", WebSearchKey);
+
+                // Request parameters
+                var uri = "https://api.cognitive.microsoft.com/bing/v5.0/images/search?" + queryString;
+
+                var response = await client.GetStringAsync(uri);
+                var results = JsonConvert.DeserializeObject<WebImageSearchResult>(response);
+
+                var imageList = new List<Image> { Image1, Image2, Image3, Image4 };
+
+                Random r = new Random();
+
+                foreach (var image in imageList)
+                {
+                    BitmapImage bitmapImage = new BitmapImage();
+                    bitmapImage.UriSource = new Uri(results.value[r.Next(0, results.value.Length)].contentUrl);
+
+                    image.Source = bitmapImage;
+                }
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            
         }
 
         #endregion
@@ -151,9 +159,6 @@ namespace DescribeImage
         }
 
         #endregion
-
-
-
 
     }
 }
